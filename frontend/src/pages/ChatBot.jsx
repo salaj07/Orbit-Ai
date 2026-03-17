@@ -526,22 +526,41 @@ export default function ChatBot() {
         color: "var(--text-primary)",
         fontFamily: "'Inter', system-ui, sans-serif",
         overflow: "hidden",
+        position: "relative",
       }}
     >
-      {/* ── Sidebar ── */}
+      {/* ── Backdrop overlay ── */}
+      {showSidebar && (
+        <div
+          onClick={() => setShowSidebar(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.55)",
+            zIndex: 40,
+            backdropFilter: "blur(2px)",
+            animation: "fadeIn 0.2s ease",
+          }}
+        />
+      )}
+
+      {/* ── Sidebar (fixed overlay drawer) ── */}
       <div
-        className={showSidebar ? "animate-slide-in-left" : ""}
         style={{
-          width: showSidebar ? 260 : 0,
-          minWidth: showSidebar ? 260 : 0,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          height: "100vh",
+          width: 260,
           background: "var(--bg-secondary)",
           borderRight: "1px solid var(--border-subtle)",
           display: "flex",
           flexDirection: "column",
-          transition: "width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1)",
+          transform: showSidebar ? "translateX(0)" : "translateX(-270px)",
+          transition: "transform 0.3s cubic-bezier(0.4,0,0.2,1)",
+          zIndex: 50,
+          boxShadow: showSidebar ? "4px 0 32px rgba(0,0,0,0.5)" : "none",
           overflow: "hidden",
-          position: "relative",
-          zIndex: 20,
         }}
       >
         <div
@@ -749,8 +768,8 @@ export default function ChatBot() {
         )}
       </div>
 
-      {/* ── Main Chat Area ── */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      {/* ── Main Chat Area (always full width) ── */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", width: "100%" }}>
         {/* Header */}
         <div
           className="glass"
@@ -1055,20 +1074,7 @@ export default function ChatBot() {
         </div>
       </div>
 
-      {/* Mobile overlay */}
-      {showSidebar && (
-        <div
-          onClick={() => setShowSidebar(false)}
-          style={{
-            display: "none",
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.7)",
-            zIndex: 15,
-          }}
-          className="mobile-overlay"
-        />
-      )}
+      {/* (backdrop handled above) */}
     </div>
   );
 }
